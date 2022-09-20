@@ -2,6 +2,14 @@ const express = require('express')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 const exphbs = require('express-handlebars')
+require("dotenv").config();
+
+//DB
+let userDB = process.env.DB_USER
+let passwordDB = process.env.DB_PASS
+
+//models
+const User = require("./models/Users");
 
 const app = express()
 
@@ -50,13 +58,9 @@ app.post('/create', (req,res)=>{
 //deletar livros
 
 
-
-
-
-
-
-
-
-app.listen(3000, ()=>{
-    console.log('Servidor on')
-})
+mongoose.connect(`mongodb+srv://${userDB}:${passwordDB}@cluster0.9dzfvkp.mongodb.net/?retryWrites=true&w=majority`)
+.then(
+    app.listen(3000, ()=>{
+        console.log('Conectado no DB e online')
+    }))
+.catch((error)=>console.log(error))
