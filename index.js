@@ -9,7 +9,8 @@ let userDB = process.env.DB_USER
 let passwordDB = process.env.DB_PASS
 
 //models
-const User = require("./models/Users");
+const Users = require("./models/Users");
+const Books = require('./models/Books')
 
 const app = express()
 
@@ -26,33 +27,90 @@ app.use(express.urlencoded({
 }))
 
 //public routes
+//home
 app.get('/', (req, res)=>{
     res.render('home')
 })
 
-//cadastro
-app.get('/create', (req,res)=>{
-    res.render('create')
+//Create books
+app.get('/insertbook', (req,res)=>{
+    res.render('insertbook')
 })
 
-app.post('/create', (req,res)=>{
+app.post('/insertbook', (req,res)=>{
 
-    let body = req.body
+    const {name, author,pages, synopsis } = req.body
 
-    console.log(body)
+    const newBook =  {name, author, pages, synopsis}
 
+    try{
+        Books.create(newBook)
+        res.redirect('/')
+
+    }catch(error){
+        console.log(error)
+    }
+})
+
+//Create User
+app.get('/createUser', (req,res)=>{
+    res.render('createUser')
+})
+app.post('/createUser', (req,res)=>{
+
+    const { login, password , email } = req.body
     
+    const newUser = {login, password, email}
+
+    try{
+
+        Users.create(newUser)
+
+    }catch(error){
+        console.log(error)
+    }
     res.redirect('/')
 
    
 })
 
 //login
+app.get('/login', (req,res)=>{
+    res.render('login')
+})
 
+app.post('/login', async (req,res)=>{
+
+    const {email, password} = req.body
+
+    let userDB = await Users.findOne({email})
+
+    //validações
+    if(!userDB){
+
+        res.redirect('/login')
+        return console.log('Usuario nao existe!')
+    }
+
+    if(userDB && userDB.password === password){
+
+        res.redirect('/showbooks')
+        return console.log('Usuario e senha corretos!')
+    }
+
+    if(userDB && userDB.password !== password){
+
+        res.redirect('/login')
+        return console.log('Senha incorreta!')
+    }
+
+    res.redirect('/showbooks')
+})
 
 
 
 //private routes
+
 // ver livros disponiveis 
 //editar livros
 //deletar livros
