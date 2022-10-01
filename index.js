@@ -7,6 +7,7 @@ require("dotenv").config();
 //DB
 let userDB = process.env.DB_USER
 let passwordDB = process.env.DB_PASS
+let secret = process.env.SECRET
 
 //models
 const Users = require("./models/Users");
@@ -40,7 +41,6 @@ app.get('/insertbook', (req,res)=>{
 app.post('/insertbook', (req,res)=>{
 
     const {name, author,pages, synopsis } = req.body
-
     const newBook =  {name, author, pages, synopsis}
 
     try{
@@ -86,34 +86,60 @@ app.post('/login', async (req,res)=>{
     let userDB = await Users.findOne({email})
 
     //validações
-    if(!userDB){
-
-        res.redirect('/login')
-        return console.log('Usuario nao existe!')
-    }
-
     if(userDB && userDB.password === password){
+        //autenticaçao
+        const id = userDB._id
+        const token = jwt.sign({id}, secret)
 
-        res.redirect('/showbooks')
+        res.redirect(`/showbooks:${token}`)
         return console.log('Usuario e senha corretos!')
     }
 
-    if(userDB && userDB.password !== password){
-
-        res.redirect('/login')
-        return console.log('Senha incorreta!')
+    if(!userDB){
+        res.status(401).json({msg:"Usuario nao existe!"})
     }
 
-    res.redirect('/showbooks')
+    if(userDB && userDB.password !== password){
+        res.status(401).json({msg:"Senha incorreta!"})
+    }
+
+})
+
+//PRIVATE ROUTES
+
+//authorization
+function verifyJWT(req,res,next) {
+
+    const params = req.params.id
+
+    const token = params.replace(':','')
+    
+    if(!token){
+        res.status(404).json({msg:'Nao possui token'})
+    }
+
+    try{
+
+        jwt.verify(token, secret)
+        next()
+
+     } catch(error){
+        res.status(401).json({msg:"Erro ao validar o token"})
+     }    
+}
+
+
+// ver livros disponiveis 
+
+app.get('/showbooks:id', verifyJWT ,async (req,res)=>{
+    const books = await Books.find().lean()
+
+
+    res.render('showbooks', {books})
 })
 
 
 
-//private routes
-
-// ver livros disponiveis 
-//editar livros
-//deletar livros
 
 
 mongoose.connect(`mongodb+srv://${userDB}:${passwordDB}@cluster0.9dzfvkp.mongodb.net/?retryWrites=true&w=majority`)

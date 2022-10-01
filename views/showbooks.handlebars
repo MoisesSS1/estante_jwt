@@ -1,0 +1,25 @@
+<div class="Container-books">
+    <h1>Livros cadastrados</h1>
+
+{{#each books}}
+
+    <div>
+        <h3>Titulo: {{this.name}}</h3>
+        <p>Autor: {{this.author}}</p>
+        <p>Páginas: {{this.pages}}</p>
+        <p>Sinopse: {{this.synopsis}}</p>
+
+        <button id="a-edit-btn">
+            <a href="/editbook:{{this._id}}">Editar livro</a>
+        </button>
+
+    </div> 
+
+{{/each}}
+
+
+</div>
+
+
+
+
