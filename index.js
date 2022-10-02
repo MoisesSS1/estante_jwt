@@ -45,7 +45,7 @@ app.post('/insertbook', (req,res)=>{
 
     try{
         Books.create(newBook)
-        res.redirect('/')
+        res.redirect('/insertbook')
 
     }catch(error){
         console.log(error)
@@ -76,6 +76,7 @@ app.post('/createUser', (req,res)=>{
 
 //login
 app.get('/login', (req,res)=>{
+    
     res.render('login')
 })
 
@@ -92,7 +93,6 @@ app.post('/login', async (req,res)=>{
         const token = jwt.sign({id}, secret)
 
         res.redirect(`/showbooks:${token}`)
-        return console.log('Usuario e senha corretos!')
     }
 
     if(!userDB){
@@ -115,7 +115,7 @@ function verifyJWT(req,res,next) {
     const token = params.replace(':','')
     
     if(!token){
-        res.status(404).json({msg:'Nao possui token'})
+        res.status(401).json({msg:'Nao possui token'})
     }
 
     try{
@@ -124,7 +124,7 @@ function verifyJWT(req,res,next) {
         next()
 
      } catch(error){
-        res.status(401).json({msg:"Erro ao validar o token"})
+        res.status(404).json({msg:"Erro ao validar o token"})
      }    
 }
 
@@ -140,8 +140,7 @@ app.get('/showbooks:id', verifyJWT ,async (req,res)=>{
 
 
 
-
-
+//Conect DB
 mongoose.connect(`mongodb+srv://${userDB}:${passwordDB}@cluster0.9dzfvkp.mongodb.net/?retryWrites=true&w=majority`)
 .then(
     app.listen(3000, ()=>{

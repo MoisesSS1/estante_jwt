@@ -1,0 +1,32 @@
+#container-books{
+    text-align: center;
+    margin-top: 50px;
+}
+
+#container-books h1{
+    color: #ff3877;
+}
+
+#books{
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.card-book{
+    width: 300px;
+    min-height: 200PX;
+}
+
+.card-book p{
+    padding: 5px;
+}
+
+details[open] {
+    margin-bottom: 20px;
+}
+
+details:hover{
+    cursor: pointer;
+}

@@ -1,23 +1,21 @@
-<div class="container-insertBook">
-
+<div ID="container-form">
     <h1>Inserir livro</h1>
-    <form action="/insertbook" method="POST">
-    
-    <label for="name">Nome:</label>
-    <input type="text" name="name" id="name" placeholder="Nome do livro">
 
-    <label for="author">Autor:</label>
-    <input type="text" name="author" id="author" placeholder="Autor do livro">
+    <div id="form">
+        <form action="/insertbook" method="POST">
+        
+        <input type="text" name="name" id="name" placeholder="NOME DO LIVRO" >
 
-    <label for="pages"></label>
-    <input type="number" name="pages" id="pages" placeholder="Qtd. de paginas">
+        <input type="text" name="author" id="author" placeholder="AUTOR">
 
-    <label for="synopsis">Sinopse</label>
-    <textarea name="synopsis" id="synopsis" cols="30" rows="15"></textarea>
+        <input type="number" name="pages" id="pages" placeholder="QTD. PAGINAS">
 
-    <input type="submit" value="Cadastrar">
+        <textarea name="synopsis" id="synopsis" cols="30" rows="10" placeholder="SINOPSE"></textarea>
 
 
-    </form>
+            <button type="submit">Cadastrar</button>
 
+
+        </form>
+    </div>
 </div>
